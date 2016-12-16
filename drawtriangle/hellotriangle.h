@@ -9,6 +9,7 @@
 #include <cstring>
 #include <set>
 #include <algorithm>
+#include <fstream>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -17,6 +18,25 @@
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
+
+static std::vector<char> readFile(const std::string& filename)
+{
+	std::ifstream file(filename, std::ios::ate | std::ios::binary);
+
+	if (!file.is_open())
+	{
+		throw std::runtime_error("failed to open file!");
+	}
+
+	size_t fileSize = (size_t)file.tellg();
+	std::vector<char> buffer(fileSize);
+
+	file.seekg(0);
+	file.read(buffer.data(), fileSize);
+
+	file.close();
+	return buffer;
+}
 
 const std::vector<const char*> validationLayers =
 {
@@ -86,6 +106,8 @@ private:
 		pickPhysicalDevice();
 		createLogicalDevice();
 		createSwapChain();
+		createImageViews();
+		createGraphicsPipeline();
 	}
 
 	void createSurface()
@@ -101,6 +123,9 @@ private:
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 	void createSwapChain();
+	void createImageViews();
+	void createGraphicsPipeline();
+	void createShaderModule(const std::vector<char>& code, VDeleter<VkShaderModule>& shaderModule);
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device)
 	{
@@ -389,4 +414,6 @@ private:
 	std::vector<VkImage> swapChainImages;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
+
+	std::vector<VDeleter<VkImageView>> swapChainImageViews;
 };
