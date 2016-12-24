@@ -108,6 +108,7 @@ private:
 		createSwapChain();
 		createImageViews();
 		createGraphicsPipeline();
+		createRenderPass();
 	}
 
 	void createSurface()
@@ -126,6 +127,7 @@ private:
 	void createImageViews();
 	void createGraphicsPipeline();
 	void createShaderModule(const std::vector<char>& code, VDeleter<VkShaderModule>& shaderModule);
+	void createRenderPass();
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device)
 	{
@@ -416,4 +418,6 @@ private:
 	VkExtent2D swapChainExtent;
 
 	std::vector<VDeleter<VkImageView>> swapChainImageViews;
+	VDeleter<VkPipelineLayout> pipelineLayout{ device, vkDestroyPipelineLayout };
+	VDeleter<VkRenderPass> renderPass{ device, vkDestroyRenderPass };
 };
