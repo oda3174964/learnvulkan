@@ -107,8 +107,11 @@ private:
 		createLogicalDevice();
 		createSwapChain();
 		createImageViews();
-		createGraphicsPipeline();
 		createRenderPass();
+		createGraphicsPipeline();
+		createFramebuffers();
+		createCommandPool();
+		createCommandBuffers();
 	}
 
 	void createSurface()
@@ -128,6 +131,10 @@ private:
 	void createGraphicsPipeline();
 	void createShaderModule(const std::vector<char>& code, VDeleter<VkShaderModule>& shaderModule);
 	void createRenderPass();
+	void createFramebuffers();
+	void createCommandPool();
+	void createCommandBuffers();
+	void drawFrame();
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device)
 	{
@@ -279,6 +286,7 @@ private:
 		while (!glfwWindowShouldClose(window))
 		{
 			glfwPollEvents();
+			drawFrame();
 		}
 	}
 
@@ -420,4 +428,8 @@ private:
 	std::vector<VDeleter<VkImageView>> swapChainImageViews;
 	VDeleter<VkPipelineLayout> pipelineLayout{ device, vkDestroyPipelineLayout };
 	VDeleter<VkRenderPass> renderPass{ device, vkDestroyRenderPass };
+	VDeleter<VkPipeline> graphicsPipeline{ device, vkDestroyPipeline };
+	std::vector<VDeleter<VkFramebuffer>> swapChainFramebuffers;
+	VDeleter<VkCommandPool> commandPool{ device, vkDestroyCommandPool };
+	std::vector<VkCommandBuffer> commandBuffers;
 };
