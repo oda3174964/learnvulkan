@@ -112,6 +112,7 @@ private:
 		createFramebuffers();
 		createCommandPool();
 		createCommandBuffers();
+		createSemphores();
 	}
 
 	void createSurface()
@@ -135,6 +136,7 @@ private:
 	void createCommandPool();
 	void createCommandBuffers();
 	void drawFrame();
+	void createSemphores();
 
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device)
 	{
@@ -432,4 +434,6 @@ private:
 	std::vector<VDeleter<VkFramebuffer>> swapChainFramebuffers;
 	VDeleter<VkCommandPool> commandPool{ device, vkDestroyCommandPool };
 	std::vector<VkCommandBuffer> commandBuffers;
+	VDeleter<VkSemaphore> imageAvailableSemaphore{ device, vkDestroySemaphore };
+	VDeleter<VkSemaphore> renderFinishedSemaphore{ device, vkDestroySemaphore };
 };
